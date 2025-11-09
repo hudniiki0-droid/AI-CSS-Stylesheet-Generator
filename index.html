@@ -1,85 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CSS Builder with Theme Toggle</title>
+    <title>CSS Class & Stylesheet Builder — GitHub Pages Safe</title>
     <style>
-      :root {
-        --bg: #f9fafb;
-        --ink: #111827;
-        --line: #e5e7eb;
-        --accent: #2563eb;
-      }
-      [data-theme="dark"] {
-        --bg: #111827;
-        --ink: #f9fafb;
-        --line: #374151;
-        --accent: #3b82f6;
-      }
-      body {
-        background: var(--bg);
-        color: var(--ink);
-        font-family: sans-serif;
-        margin: 0;
-        padding: 20px;
-      }
-      button {
-        background: var(--ink);
-        color: var(--bg);
-        border: none;
-        border-radius: 6px;
-        padding: 8px 12px;
-        cursor: pointer;
-      }
-      button:hover { opacity: 0.85; }
-      .container { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 20px; }
-      .box { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
-      textarea,input,select { width:100%;padding:6px;border-radius:6px;border:1px solid var(--line);margin-bottom:10px;background:var(--bg);color:var(--ink); }
-      pre { background: var(--line); color: var(--ink); padding: 10px; border-radius: 8px; }
+      :root { --bg:#f9fafb; --ink:#111827; --line:#e5e7eb; --accent:#2563eb; --muted:#6b7280; }
+      [data-theme="dark"] { --bg:#0f172a; --ink:#e5e7eb; --line:#334155; --accent:#60a5fa; --muted:#94a3b8; }
+      * { box-sizing: border-box; }
+      body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--ink); }
+      header { position:sticky; top:0; z-index:10; backdrop-filter: blur(6px); background: color-mix(in srgb, var(--bg) 85%, transparent); border-bottom:1px solid var(--line); }
+      header .bar { max-width:1100px; margin:auto; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+      h1 { font-size:18px; margin:0; }
+      .container { max-width:1100px; margin:16px auto; padding:0 16px; display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); }
+      .card { background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:16px; }
+      label { display:block; font-size:12px; color:var(--muted); margin:8px 0 6px; }
+      input, select, textarea { width:100%; padding:8px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); }
+      textarea { min-height:96px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
+      .row { display:flex; flex-wrap:wrap; gap:8px; }
+      .btn { appearance:none; border:none; background:var(--ink); color:var(--bg); padding:8px 12px; border-radius:10px; cursor:pointer; }
+      .btn.secondary { background:transparent; color:var(--ink); border:1px solid var(--line); }
+      .btn:disabled { opacity:.5; cursor:not-allowed; }
+      .muted { color:var(--muted); font-size:12px; }
+      pre { white-space:pre-wrap; background:color-mix(in srgb, var(--line) 40%, transparent); border:1px dashed var(--line); padding:10px; border-radius:10px; }
+      .status { font-size:12px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; background:color-mix(in srgb, var(--line) 25%, transparent); }
+      @media (max-width:640px){ .row.grid { display:grid; grid-template-columns:1fr 1fr; } }
     </style>
-    <script>
-      let darkMode = false;
-      function toggleTheme() {
-        darkMode = !darkMode;
-        document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-        const icon = document.getElementById('themeLabel');
-        icon.textContent = darkMode ? '🌙 Dark Mode' : '☀️ Light Mode';
-      }
-      document.addEventListener('DOMContentLoaded', () => {
-        document.documentElement.setAttribute('data-theme', 'light');
-      });
-    </script>
   </head>
   <body>
-    <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <h1>CSS Class & Stylesheet Builder</h1>
-      <button onclick="toggleTheme()" id="themeLabel">☀️ Light Mode</button>
-    </header>
-    <div class="container">
-      <div class="box">
-        <h3>Settings</h3>
-        <label>Scheme</label>
-        <select><option>BEM</option><option>kebab-case</option></select>
-        <label>Prefix</label>
-        <input placeholder="ui" />
-        <label>Block</label>
-        <input placeholder="card" />
-        <button>Generate</button>
-      </div>
-      <div class="box">
-        <h3>Generated CSS</h3>
-        <textarea rows="12" placeholder="Generated classes or CSS will appear here..."></textarea>
-      </div>
-      <div class="box">
-        <h3>Preview</h3>
-        <div style="border:1px solid var(--line);border-radius:8px;padding:10px;">
-          <div style="font-weight:bold;">Header</div>
-          <div>Body example text.</div>
-          <button style="margin-top:10px;background:var(--accent);color:var(--bg);">Action</button>
+    <header>
+      <div class="bar">
+        <div style="width:10px;height:10px;border-radius:999px;background:var(--ink);"></div>
+        <h1>CSS Class & Stylesheet Builder</h1>
+        <div style="margin-left:auto;" class="row">
+          <button class="btn secondary" id="themeToggle">☀️ Light</button>
+          <button class="btn secondary" id="selfTestBtn" title="Run quick checks">Run self‑test</button>
         </div>
       </div>
-    </div>
+    </header>
+
+    <main class="container">
+      <!-- Settings -->
+      <section class="card">
+        <h3 style="margin:0 0 8px;">Settings</h3>
+        <label>Scheme</label>
+        <select id="scheme">
+          <option value="bem" selected>BEM</option>
+          <option value="kebab">kebab-case</option>
+          <option value="camel">camelCase</option>
+          <option value="snake">snake_case</option>
+        </select>
+        <div class="row">
+          <div style="flex:1 1 140px;">
+            <label>Prefix (optional)</label>
+            <input id="prefix" placeholder="ui" />
+          </div>
+          <div style="flex:1 1 140px;">
+            <label>Block</label>
+            <input id="block" placeholder="card" value="card" />
+          </div>
+        </div>
+        <label>Elements (one per line)</label>
+        <textarea id="elements">header
+body
+footer</textarea>
+        <label>Modifiers (one per line)</label>
+        <textarea id="modifiers">primary
+secondary
+hover
+active</textarea>
+        <div class="row grid" style="margin-top:8px;">
+          <button class="btn" id="generateBtn">Generate</button>
+          <button class="btn secondary" id="copyClassesBtn">Copy classes</button>
+          <button class="btn secondary" id="copyCssBtn">Copy CSS</button>
+          <button class="btn secondary" id="exportCssBtn">Export CSS</button>
+        </div>
+        <div class="muted" style="margin-top:8px;">Tip: set a short prefix (e.g. <code>ui</code>) to avoid collisions.</div>
+      </section>
+
+      <!-- Classes -->
+      <section class="card">
+        <h3 style="margin:0 0 8px;">Generated classes</h3>
+        <textarea id="output" rows="14" readonly></textarea>
+        <label>Filter</label>
+        <input id="filter" placeholder="e.g. btn, __header, --active" />
+        <pre id="filtered" class="muted" style="min-height:48px;"></pre>
+        <div class="row" style="margin-top:8px;">
+          <input type="file" id="cssFile" accept=".css,text/css" hidden />
+          <button class="btn secondary" id="importCssBtn">Import CSS</button>
+          <select id="importMode" class="" title="When importing CSS">
+            <option value="replace">Replace</option>
+            <option value="append">Append</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Stylesheet & Preview -->
+      <section class="card">
+        <h3 style="margin:0 0 8px;">Stylesheet</h3>
+        <textarea id="css" rows="14" spellcheck="false">:root {
+  --brand: #5b8def;
+  --text: #111827;
+  --radius: 12px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius);
+  padding: 1rem;
+  color: var(--text);
+}
+.card__header { font-weight: 600; margin-bottom: .5rem; }
+.card__footer { display:flex; justify-content:flex-end; gap:.5rem; }</textarea>
+        <div class="row" style="margin:8px 0 12px;">
+          <button class="btn secondary" id="applyCssBtn">Apply CSS to preview</button>
+        </div>
+        <div class="status" id="status">Ready.</div>
+        <h3 style="margin:16px 0 8px;">Preview</h3>
+        <article id="pv-article" class="card" style="border:1px solid var(--line); border-radius:10px; padding:12px;">
+          <div id="pv-head" class="card__header">Card title</div>
+          <div id="pv-body" class="card__body">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+          <div id="pv-foot" class="card__footer"><button class="btn secondary">Cancel</button><button class="btn">Save</button></div>
+        </article>
+        <div class="muted" style="margin-top:8px;">Applied markup</div>
+        <pre id="appliedCode"></pre>
+      </section>
+    </main>
+
+    <script>
+      // ---------- Utilities ----------
+      const $ = (id) => document.getElementById(id);
+      const kebab = (s) => String(s||'').replace(/([a-z])([A-Z])/g,'$1-$2').replace(/[_\s]+/g,'-').toLowerCase();
+      const camel = (s) => String(s||'').toLowerCase().replace(/[-_\s]+(.)?/g, (_, c) => c ? c.toUpperCase() : '');
+      const snake = (s) => String(s||'').replace(/([a-z])([A-Z])/g,'$1_$2').replace(/[-\s]+/g,'_').toLowerCase();
+      const uniq = (arr) => Array.from(new Set(arr));
+      const lines = (v) => String(v||'').split(/\r?\n/).map(t=>t.trim()).filter(Boolean);
+
+      function toast(msg){
+        const el=document.createElement('div');
+        el.textContent=msg; el.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:8px 12px;border-radius:10px;font-size:12px;z-index:9999;';
+        document.body.appendChild(el); setTimeout(()=>el.remove(),1200);
+      }
+
+      function setStatus(msg){ $('status').textContent = msg; }
+
+      // ---------- Theme toggle (safe for GH Pages) ----------
+      (function mountThemeToggle(){
+        const btn = $('themeToggle');
+        let dark=false;
+        btn.addEventListener('click',()=>{
+          dark=!dark; document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+          btn.textContent = dark? '🌙 Dark' : '☀️ Light';
+        });
+        document.documentElement.setAttribute('data-theme','light');
+      })();
+
+      // ---------- Style injection ----------
+      function applyCss(css){
+        let style = document.getElementById('live-style');
+        if(!style){ style = document.createElement('style'); style.id='live-style'; document.head.appendChild(style); }
+        style.textContent = String(css||'');
+      }
+
+      // ---------- Class name generation ----------
+      function makeBem(block, element='', modifier=''){
+        let cls = block; if(element) cls += `__${element}`; if(modifier) cls += `--${modifier}`; return cls;
+      }
+      function generate(){
+        const scheme = $('scheme').value;
+        const prefix = kebab($('prefix').value.trim());
+        const block = kebab($('block').value.trim() || 'block');
+        const elements = lines($('elements').value);
+        const modifiers = lines($('modifiers').value);
+
+        let list=[];
+        if(scheme==='bem'){
+          list.push(makeBem(block));
+          elements.forEach(e=>list.push(makeBem(block, kebab(e))));
+          modifiers.forEach(m=>list.push(makeBem(block, '', kebab(m))));
+          elements.forEach(e=>modifiers.forEach(m=>list.push(makeBem(block, kebab(e), kebab(m)))));
+        } else {
+          const t=[block, ...elements, ...modifiers];
+          t.forEach(x=>{ let n=x; if(scheme==='kebab') n=kebab(n); if(scheme==='camel') n=camel(n); if(scheme==='snake') n=snake(n); list.push(n); });
+        }
+        if(prefix) list = list.map(c=>`${prefix}-${c}`);
+        list = uniq(list);
+        $('output').value = list.join('\n');
+        setStatus(`Generated ${list.length} selectors.`);
+        // Build minimal CSS from classes
+        const css = list.filter(c=>c && !/\s/.test(c)).map(c=>`.${c} {\n  /* styles */\n}`).join('\n\n');
+        $('css').value = css; applyCss(css);
+        updatePreviewMarkup();
+      }
+
+      function updatePreviewMarkup(){
+        const scheme=$('scheme').value; const prefix=kebab($('prefix').value.trim()); const block=kebab($('block').value.trim()||'card');
+        const ns = prefix? `${prefix}-` : '';
+        let base=head=body=foot='';
+        if(scheme==='bem'){ base = ns+block; head=ns+makeBem(block,'header'); body=ns+makeBem(block,'body'); foot=ns+makeBem(block,'footer'); }
+        else { base=head=body=foot=ns+block; }
+        $('pv-article').className = base; $('pv-head').className=head; $('pv-body').className=body; $('pv-foot').className=foot;
+        $('appliedCode').textContent = `<article class="${base}">\n  <div class="${head}">...</div>\n  <div class="${body}">...</div>\n  <div class="${foot}">...</div>\n</article>`;
+      }
+
+      // ---------- Copy / Export ----------
+      function copyText(id){
+        const text = $(id).value; if(!navigator.clipboard){ setStatus('Clipboard API unavailable'); return; }
+        navigator.clipboard.writeText(text).then(()=>toast('Copied')).catch(()=>alert('Copy failed'));
+      }
+      function exportCss(){ const css=$('css').value; const blob=new Blob([css],{type:'text/css'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download='styles.css';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url); }
+
+      // ---------- Import CSS (selectors) ----------
+      function parseSelectorsFromCss(src){
+        const noComments = String(src||'').replace(/\/\*[\s\S]*?\*\//g,'');
+        const blocks = noComments.split('{'); const sels=[];
+        for(let i=0;i<blocks.length-1;i++){ const pre=blocks[i].trim(); if(!pre || pre.startsWith('@')) continue; pre.split(',').forEach(s=>{s=s.trim(); if(s) sels.push(s);}); }
+        return uniq(sels).sort();
+      }
+
+      function mountEvents(){
+        $('generateBtn').addEventListener('click', generate);
+        $('applyCssBtn').addEventListener('click', ()=>{ applyCss($('css').value); setStatus('Applied CSS to preview.'); });
+        $('copyClassesBtn').addEventListener('click', ()=>copyText('output'));
+        $('copyCssBtn').addEventListener('click', ()=>copyText('css'));
+        $('exportCssBtn').addEventListener('click', exportCss);
+        $('filter').addEventListener('input', ()=>{
+          const q = $('filter').value.trim(); const lines = $('output').value.split(/\n+/).filter(Boolean);
+          $('filtered').textContent = q? (lines.filter(l=>l.includes(q)).join('\n') || 'No matches') : '';
+        });
+        $('importCssBtn').addEventListener('click', ()=>$('cssFile').click());
+        $('cssFile').addEventListener('change', (e)=>{
+          const f=e.target.files && e.target.files[0]; if(!f) return; const r=new FileReader();
+          r.onload=()=>{ const text=String(r.result||''); const sels=parseSelectorsFromCss(text); const mode=$('importMode').value; if(mode==='append'){ $('css').value += '\n\n'+text; $('output').value += ( $('output').value? '\n' : '' ) + sels.join('\n'); } else { $('css').value=text; $('output').value=sels.join('\n'); }
+            applyCss($('css').value); setStatus(`Imported ${sels.length} selectors from ${f.name}`);
+            const simple = sels.find(s=>/^\.[A-Za-z0-9_-]+$/.test(s)); if(simple){ $('block').value = simple.replace(/^\./,''); updatePreviewMarkup(); }
+          }; r.readAsText(f);
+        });
+        $('selfTestBtn').addEventListener('click', selfTest);
+      }
+
+      function selfTest(){
+        try {
+          // basic sanity checks
+          const okDom = !!$('generateBtn') && !!$('output') && !!$('css');
+          const okApi = typeof Blob!== 'undefined' && typeof FileReader!=='undefined';
+          const okStyleNode = (function(){ applyCss('.__probe__{}'); return !!document.getElementById('live-style'); })();
+          const pass = okDom && okApi && okStyleNode;
+          $('status').textContent = pass? 'Self‑test passed: DOM, APIs, style injection OK.' : 'Self‑test failed: something is missing.';
+        } catch (e) {
+          $('status').textContent = 'Self‑test error: ' + e.message;
+        }
+      }
+
+      // Mount on ready
+      document.addEventListener('DOMContentLoaded', ()=>{ mountEvents(); updatePreviewMarkup(); setStatus('Ready. Click Generate to build selectors.'); });
+    </script>
   </body>
-  </html>
-  
+            </html>
+            
